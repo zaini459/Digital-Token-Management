@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UBL Digital Token Management System</title>
+    <style>
+        /* Corporate Branding Colors */
+        :root {
+            --ubl-blue: #003366;
+            --ubl-gold: #FFCC00;
+            --dark-text: #333333;
+            --light-bg: #F4F6F9;
+            --white: #FFFFFF;
+            --success: #28a745;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header Setup */
+        header {
+            background-color: var(--ubl-blue);
+            color: var(--white);
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 5px solid var(--ubl-gold);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            font-size: 0.9rem;
+            color: #dddddd;
+            margin-top: 5px;
+        }
+
+        /* Main Container Layout */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            flex: 1;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Kiosk Card / Interactive Panel */
+        .card {
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            padding: 2rem;
+            border-top: 4px solid var(--ubl-blue);
+        }
+
+        .card h2 {
+            margin-bottom: 1.5rem;
+            color: var(--ubl-blue);
+            font-size: 1.4rem;
+            border-bottom: 2px solid #eeeeee;
+            padding-bottom: 0.5rem;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn-service {
+            background-color: var(--light-bg);
+            border: 2px solid #e0e0e0;
+            padding: 1.5rem 1rem;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--ubl-blue);
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            text-align: center;
+        }
+
+        .btn-service:hover {
+            border-color: var(--ubl-blue);
+            background-color: #eef5fc;
+            transform: translateY(-2px);
+        }
+
+        .btn-service:active {
+            transform: translateY(0);
+        }
+
+        /* Token Display Animation Popup */
+        .token-display {
+            background-color: #eef5fc;
+            border-left: 5px solid var(--success);
+            padding: 1.5rem;
+            border-radius: 4px;
+            margin-top: 1.5rem;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .token-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--ubl-blue);
+            margin: 0.5rem 0;
+        }
+
+        /* Sidebar Live Counter Panel */
+        .counter-panel {
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            padding: 1.5rem;
+            border-top: 4px solid var(--ubl-gold);
+            height: fit-content;
+        }
+
+        .counter-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #eeeeee;
+        }
+
+        .counter-item:last-child {
+            border-bottom: none;
+        }
+
+        .badge {
+            background-color: var(--ubl-blue);
+            color: var(--white);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            background-color: var(--ubl-blue);
+            color: #b0c4de;
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.85rem;
+            margin-top: auto;
+            border-top: 3px solid var(--ubl-gold);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>UNITED BANK LIMITED</h1>
+        <p>Digital Branch Operations Kiosk v1.0</p>
+    </header>
+
+    <div class="container">
+        <!-- Left Column: Touchscreen Interaction Area -->
+        <main class="card">
+            <h2>Select Desired Banking Service</h2>
+            <div class="services-grid">
+                <button class="btn-service" onclick="generateToken('Cash Operations', 'CSH')">💵 Cash Deposit / Withdrawal</button>
+                <button class="btn-service" onclick="generateToken('Account Services', 'ACC')">📝 Open Account / Services</button>
+                <button class="btn-service" onclick="generateToken('Consumer Loans', 'LON')">🚗 Car & Home Financing</button>
+                <button class="btn-service" onclick="generateToken('UBL Ameen', 'AMN')">🕌 Islamic Banking Services</button>
+            </div>
+
+            <!-- Dynamic Ticket Output -->
+            <div class="token-display" id="tokenDisplay">
+                <p style="font-weight: 600; color: #555;">Your Token Has Been Generated Successfully</p>
+                <div class="token-number" id="generatedNumber">CSH-001</div>
+                <p id="serviceType" style="font-size: 0.95rem; font-weight: bold; color: var(--ubl-blue);"></p>
+                <p id="timeString" style="font-size: 0.8rem; color: #777; margin-top: 5px;"></p>
+            </div>
+        </main>
+
+        <!-- Right Column: Operational Dashboard Counters -->
+        <aside class="counter-panel">
+            <h3 style="color: var(--ubl-blue); margin-bottom: 1rem; font-size: 1.1rem;">Live Branch Metrics</h3>
+            
+            <div class="counter-item">
+                <span>Total Active Queue</span>
+                <span class="badge" id="totalQueue">0</span>
+            </div>
+            <div class="counter-item">
+                <span>Cash Counter Waiters</span>
+                <span class="badge" id="countCSH" style="background-color: #6c757d;">0</span>
+            </div>
+            <div class="counter-item">
+                <span>Account Desk Waiters</span>
+                <span class="badge" id="countACC" style="background-color: #6c757d;">0</span>
+            </div>
+            <div class="counter-item">
+                <span>Loan Desk Waiters</span>
+                <span class="badge" id="countLON" style="background-color: #6c757d;">0</span>
+            </div>
+            <div class="counter-item">
+                <span>UBL Ameen Waiters</span>
+                <span class="badge" id="countAMN" style="background-color: #6c757d;">0</span>
+            </div>
+        </aside>
+    </div>
+
+    <footer>
+        UBL Internship Project Integration - Designed for Operations Standardization
+    </footer>
+
+    <script>
+        // Fetch current live metrics from backend immediately upon page load
+        window.onload = function() {
+            fetch('/api/metrics')
+                .then(response => response.json())
+                .then(data => updateLiveUI(data))
+                .catch(err => console.error("Could not fetch branch metrics:", err));
+        };
+
+        function generateToken(serviceName, prefix) {
+            // Post payload data directly to Flask server backend
+            fetch('/api/generate-token', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    prefix: prefix,
+                    service_name: serviceName
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.error) {
+                    alert(data.error);
+                    return;
+                }
+                
+                // Update UI Display using database responses
+                document.getElementById('generatedNumber').innerText = data.token_number;
+                document.getElementById('serviceType').innerText = data.service_type;
+                document.getElementById('timeString').innerText = data.time_string;
+                
+                // Render the token confirmation panel visible
+                document.getElementById('tokenDisplay').style.display = 'block';
+
+                // Pass metrics array object to operational dashboard interface
+                updateLiveUI(data.metrics);
+            })
+            .catch(err => console.error("Error communicating with token backend:", err));
+        }
+
+        function updateLiveUI(metrics) {
+            // Re-render UI dashboards dynamically using accurate server states
+            document.getElementById('countCSH').innerText = metrics.CSH;
+            document.getElementById('countACC').innerText = metrics.ACC;
+            document.getElementById('countLON').innerText = metrics.LON;
+            document.getElementById('countAMN').innerText = metrics.AMN;
+            document.getElementById('totalQueue').innerText = metrics.total;
+        }
+    </script>
+</body>
+</html>
